@@ -1,0 +1,29 @@
+{
+  "name": "duranirving-server-app",
+  "version": "1.0.0",
+  "description": "client plaform for duranirving.com",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.21.0",
+    "nodemailer": "^6.4.6",
+    "nodemailer-handlebars": "^1.0.1",
+    "pg": "^8.0.3",
+    "sqlite": "^4.0.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  },
+  "scripts": {
+    "test": "jest --watch --verbose",
+    "start": "node index.js",
+    "server": "nodemon index.js"
+  },
+  "author": "fixmylifedesigns <ijd.irving@gmail.com>"
+}
