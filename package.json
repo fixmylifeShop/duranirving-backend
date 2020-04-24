@@ -15,7 +15,8 @@
     "nodemailer": "^6.4.6",
     "nodemailer-handlebars": "^1.0.1",
     "pg": "^8.0.3",
-    "sqlite": "^4.0.7"
+    "sqlite": "^4.0.7",
+    "sqlite3": "^4.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
@@ -25,5 +26,6 @@
     "start": "node index.js",
     "server": "nodemon index.js"
   },
-  "author": "fixmylifedesigns <ijd.irving@gmail.com>"
+  "author": "fixmylifedesigns <ijd.irving@gmail.com>",
+  "repository": "https://github.com/fixmylifeShop/duranirving-platform.git"
 }
