@@ -40,4 +40,16 @@ router.get("/", restricted, (req, res) => {
     });
 });
 
+router.get("/:id", verifyUserExist, (req, res) => {
+  Users.findById(req.params.id)
+    .then((user) => {
+      return res.status(200).json(user);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ err, message: "we ran into an error retreving the user" });
+    });
+});
+
 module.exports = router;
