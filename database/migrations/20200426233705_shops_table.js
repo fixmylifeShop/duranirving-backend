@@ -12,7 +12,7 @@ exports.up = function (knex) {
 
     tbl.string("store_name").notNullable();
 
-    tbl.string("logo");
+    tbl.string("store_logo");
   });
 };
 

@@ -1,17 +1,9 @@
 exports.up = function (knex) {
   return knex.schema.createTable("products", (tbl) => {
     tbl
-      .integer("user_id")
-      .references("id")
-      .inTable("users")
-      .onDelete("CASCADE")
-      .onUpdate("CASCADE")
-      .notNullable();
-
-    tbl
       .integer("shop_id")
-      .references("shops")
-      .inTable("users")
+      .references("id")
+      .inTable("shops")
       .onDelete("CASCADE")
       .onUpdate("CASCADE")
       .notNullable();
@@ -23,6 +15,8 @@ exports.up = function (knex) {
     tbl.string("description", 1000);
 
     tbl.integer("price");
+
+    tbl.string("image");
   });
 };
 

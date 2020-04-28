@@ -8,10 +8,18 @@ module.exports = {
   remove,
 };
 
-function getUsers() {
-  console.log(db("users"));
+const selection = [
+  "id",
+  "email",
+  "first_name",
+  "last_name",
+  "phone",
+  "created_at",
+  "updated_at",
+];
 
-  return db("users");
+function getUsers() {
+  return db("users").select(selection);
 }
 
 function findBy(filter) {
@@ -19,18 +27,16 @@ function findBy(filter) {
 }
 
 function findById(id) {
-  return db("users")
-    .where({ id })
-    .first()
-    .select(
-      "id",
-      "email",
-      "first_name",
-      "last_name",
-      "phone",
-      "created_at",
-      "updated_at"
-    );
+  return db("users").where({ id }).first();
+  // .select(
+  //   "id",
+  //   "email",
+  //   "first_name",
+  //   "last_name",
+  //   "phone",
+  //   "created_at",
+  //   "updated_at"
+  // );
 }
 
 function update(id, changes) {
@@ -47,5 +53,8 @@ function update(id, changes) {
 }
 
 function remove(id) {
-  return db("users").where({ id }).del();
+  return db("users")
+    .where({ id })
+    .del()
+   
 }

@@ -1,33 +1,133 @@
 const router = require("express").Router();
+const Shops = require("./shopsModel");
+const Products = require("../products/productsModel");
+const {
+  uploadImageToStorage,
+  multer,
+} = require("../../../components/googleCloudUploader.js");
 
-const Shops = require("./shopsModel")
+// router.post("/upload", multer.single("file"), (req, res) => {
+//   let file = req.file;
+//   if (file) {
+//     uploadImageToStorage(file)
+//       .then((success) => {
+//         return res.status(200).json(success);
+//       })
+//       .catch((error) => {
+//         console.error(error);
+//         return res.status(500).json(error);
+//       });
+//   }
+// });
 
 router.get("/", (req, res) => {
-    Shops.getAllShops()
-      .then(shop => {
-        res.status(200).json(shop);
-      })
-      .catch(error => {
-        res
-          .status(500)
-          .json({ req, error, message: "error retrieving all shops" });
-      });
-  });
+  Shops.getAllShops()
+    .then((shop) => {
+      res.status(200).json(shop);
+    })
+    .catch((error) => {
+      res
+        .status(500)
+        .json({ req, error, message: "error retrieving all shops" });
+    });
+});
 
-  router.post("/", async (req, res) => {
+router.get("/:id", (req, res) => {
+  Shops.findById(req.params.id)
+    .then((shop) => {
+      Products.getShopProducts(req.params.id)
+      .then((products) => {
+        shop.products = products;
+        return res.status(200).json(shop);
+      });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ err, message: "we ran into an error retreving the shop" });
+    });
+});
+
+router.post("/", multer.single("file"), async (req, res) => {
+  let file = req.file;
+  const shop = req.body;
+  // console.log(shop);
+  const send = async (shop) => {
+    try {
+      const inserted = await Shops.add(shop);
+      res.status(201).json(inserted);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error, message: "we ran into an error creating your store" });
+    }
+  };
+
+  if (file) {
+    uploadImageToStorage(file)
+      .then((success) => {
+        shop.store_logo = success;
+        send(shop);
+      })
+      .catch((error) => {
+        res.status(500).json(error);
+      });
+  } else {
+    send(shop);
+  }
+});
+
+router.put(
+  "/:id",
+  multer.single("file"),
+  // restricted, verifyPostOwner,
+  (req, res) => {
+    let file = req.file;
     const shop = req.body;
-    // if (shop.description && shop.image) {
-      try {
-        const inserted = await Shops.add(shop);
-        res.status(201).json(inserted);
-      } catch (error) {
+    const sendUpdate = () => {
+      return Shops.update(req.params.id, req.body)
+        .then((update) => {
+          res.status(201).json(update);
+        })
+        .catch((err) => {
+          res.status(500).json({ err, message: "error updating your post" });
+        });
+    };
+    if (file) {
+      uploadImageToStorage(file)
+        .then((success) => {
+          shop.store_logo = success;
+          sendUpdate(shop);
+        })
+        .catch((error) => {
+          res.status(500).json(error);
+        });
+    } else {
+      sendUpdate(shop);
+    }
+  }
+);
+
+router.delete(
+  "/:id",
+  // restricted,
+  // verifyPostOwner,
+  (req, res) => {
+    Shops.remove(req.params.id)
+      .then((del) => {
         res
-          .status(500)
-          .json({ error, message: "we ran into an error creating your store" });
-      }
-    // } else {
-    //   res.status(400).json({ message: "Please provide a description" });
-    // }
-  });
+          .status(200)
+          .json({ message: "the shop has successfully been deleted" })
+          .end(del);
+      })
+      .catch((err) => {
+        res.status(500).json({ err, message: "this shop does not exist" });
+      });
+  }
+);
+
+const ProductsRouter = require("../products/productsRouter");
+
+router.use("/products", ProductsRouter);
 
 module.exports = router;
