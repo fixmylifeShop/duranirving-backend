@@ -11,7 +11,19 @@ router.post("/register", (req, res) => {
 
   Auth.add(user)
     .then((saved) => {
-      res.status(201).json(saved);
+      // res.status(201).json(saved);
+      const { email } = saved;
+      Auth.findBy({ email })
+        .then((user) => {
+          const token = generateToken(user);
+          res.status(200).json({
+            message: `welcome ${user.first_name}!`,
+            token,
+          });
+        })
+        .catch((error) => {
+          res.status(500).json(error);
+        });
     })
     .catch((error) => {
       res.status(500).json({ error, message: "Unable to add" });
@@ -25,7 +37,7 @@ router.post("/login", (req, res) => {
       const token = generateToken(user);
       if (user && bcrypt.compareSync(password, user.password)) {
         res.status(200).json({
-          message: `welcome ${user.first_name}!`,
+          message: `welcome back ${user.first_name}!`,
           token,
         });
       } else {

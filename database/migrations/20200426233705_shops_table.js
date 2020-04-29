@@ -12,6 +12,8 @@ exports.up = function (knex) {
 
     tbl.string("store_name").notNullable();
 
+    tbl.string("store_url").notNullable();
+
     tbl.string("store_logo");
   });
 };

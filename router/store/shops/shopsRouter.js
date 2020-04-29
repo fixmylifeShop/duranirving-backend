@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const Shops = require("./shopsModel");
 const Products = require("../products/productsModel");
+const restricted = require("../../auth/middleware/restrictedMiddleware");
+
 const {
   uploadImageToStorage,
   multer,
@@ -22,8 +24,12 @@ const {
 
 router.get("/", (req, res) => {
   Shops.getAllShops()
-    .then((shop) => {
-      res.status(200).json(shop);
+    .then(async (shop) => {
+      const newShop = await shop.map(async (store) => {
+        store.products = await Products.getShopProducts(store.id);
+        return store;
+      });
+      res.status(200).json(await Promise.all(newShop));
     })
     .catch((error) => {
       res
@@ -35,8 +41,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   Shops.findById(req.params.id)
     .then((shop) => {
-      Products.getShopProducts(req.params.id)
-      .then((products) => {
+      Products.getShopProducts(req.params.id).then((products) => {
         shop.products = products;
         return res.status(200).json(shop);
       });
@@ -48,10 +53,41 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.get("/user/:id", (req, res) => {
+  Shops.getUserShops(req.params.id)
+    .then(async (shop) => {
+      const newShop = await shop.map(async (store) => {
+        store.products = await Products.getShopProducts(store.id);
+        return store;
+      });
+      res.status(200).json(await Promise.all(newShop));
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ err, message: "we ran into an error retreving the shop" });
+    });
+});
+
+router.get("/logged/user", restricted, (req, res) => {
+  Shops.getUserShops(req.decodedToken.id)
+  .then(async (shop) => {
+    const newShop = await shop.map(async (store) => {
+      store.products = await Products.getShopProducts(store.id);
+      return store;
+    });
+    res.status(200).json(await Promise.all(newShop));
+  })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ err, message: "we ran into an error retreving the shop" });
+    });
+});
+
 router.post("/", multer.single("file"), async (req, res) => {
   let file = req.file;
   const shop = req.body;
-  // console.log(shop);
   const send = async (shop) => {
     try {
       const inserted = await Shops.add(shop);
@@ -73,6 +109,8 @@ router.post("/", multer.single("file"), async (req, res) => {
         res.status(500).json(error);
       });
   } else {
+    shop.store_logo =
+      "https://fulltummyfund.co.za/wp-content/uploads/2017/01/PlaceholderLogo.png";
     send(shop);
   }
 });
