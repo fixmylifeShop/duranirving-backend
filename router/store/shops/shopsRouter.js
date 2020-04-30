@@ -71,13 +71,14 @@ router.get("/user/:id", (req, res) => {
 
 router.get("/logged/user", restricted, (req, res) => {
   Shops.getUserShops(req.decodedToken.id)
-  .then(async (shop) => {
-    const newShop = await shop.map(async (store) => {
-      store.products = await Products.getShopProducts(store.id);
-      return store;
-    });
-    res.status(200).json(await Promise.all(newShop));
-  })
+    .then(async (shop) => {
+      const newShop = await shop.map(async (store) => {
+        store.products = await Products.getShopProducts(store.id)
+        
+        return store;
+      });
+      res.status(200).json(await Promise.all(newShop));
+    })
     .catch((err) => {
       res
         .status(500)
@@ -85,9 +86,10 @@ router.get("/logged/user", restricted, (req, res) => {
     });
 });
 
-router.post("/", multer.single("file"), async (req, res) => {
+router.post("/", restricted, multer.single("file"), async (req, res) => {
   let file = req.file;
   const shop = req.body;
+  shop.user_id = req.decodedToken.id;
   const send = async (shop) => {
     try {
       const inserted = await Shops.add(shop);
