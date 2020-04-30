@@ -1,14 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Switch, Route, Link, useHistory } from "react-router-dom";
-import axios from "axios";
+import { axiosWithoutAuth } from "../configurations/axiosConfig";
 import "../../CSS/authPage.css";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 export default function AuthenticationPage() {
   const [credentials, setCredentials] = useState({});
   const [path, setPath] = useState();
+  const [error, setError] = useState(false);
   const history = useHistory();
 
+  useEffect(() => {
+    if (error) {
+      setError(false);
+    }
+  }, [path]);
+
   const handleChange = (e) => {
+    if (error) {
+      setError(false);
+    }
     setCredentials({
       ...credentials,
       [e.target.name]: e.target.value,
@@ -16,8 +29,8 @@ export default function AuthenticationPage() {
   };
 
   const auth = () => {
-    axios
-      .post(`${process.env.REACT_APP_DOMAIN_NAME}${path}`, credentials)
+    axiosWithoutAuth()
+      .post(`${path}`, credentials)
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         console.log(res.data);
@@ -25,54 +38,61 @@ export default function AuthenticationPage() {
       })
       .catch((err) => {
         console.log(err);
+        setError("Invalid Credentials");
       });
   };
-  console.log(credentials);
+  console.log(path);
 
   const submitForm = (e) => {
     e.preventDefault();
-    auth();
+    const { email, password, first_name, last_name, phone } = credentials;
+    // if (path == "/login" && (!email || !password)) {
+    //   setError("Please wAll Text Fields");
+    // }
+    // if (
+    //   (path == "/register" && !email) ||
+    //   !password ||
+    //   !first_name ||
+    //   !last_name ||
+    //   !phone
+    // ) {
+    //   setError("Please All Text Fields");
+    // } else {
+      auth();
+    // }
+  };
+
+  const newInput = (name, placeholder, type) => {
+    return (
+      <TextField
+        id="standard-basic"
+        label={placeholder}
+        type={type}
+        name={name}
+        onChange={handleChange}
+        className="authFormInput"
+      />
+    );
   };
 
   const form = () => {
     return (
-      <form onSubmit={submitForm}>
-        <input
-          name="email"
-          label="Email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
-        <input
-          name="password"
-          placeholder="Password"
-          label="password"
-          type="password"
-          onChange={handleChange}
-        />
-        {path === "/register" ? (
-          <>
-            <input
-              name="first_name"
-              placeholder="First Name"
-              onChange={handleChange}
-            />
-            <input
-              name="last_name"
-              placeholder="Last Name"
-              onChange={handleChange}
-            />
-            <input name="phone" placeholder="Phone" onChange={handleChange} />
-          </>
-        ) : (
-          ""
-        )}
-        <button>send</button>
+      <form onSubmit={submitForm} className="form">
+        {newInput("email", "Email")}
+        {path === "/register" ? newInput("first_name", "First Name") : ""}
+        {path === "/register" ? newInput("last_name", "Last Name") : ""}
+        {path === "/register" ? newInput("phone", "Phone") : ""}
+        {newInput("password", "Password", "password")}
+
+        <Button variant="contained" onClick={submitForm}>
+          {path === "/register" ? "Sign Up" : "Log In"}
+        </Button>
+        <div className="formError">{error}</div>
       </form>
     );
   };
   return (
-    <div>
+    <div className="authContainer">
       <Switch>
         <Route
           exact
@@ -80,10 +100,16 @@ export default function AuthenticationPage() {
           render={() => {
             setPath("/login");
             return (
-              <div>
-                <Link to="/auth/register">register</Link>
-                <h1>login</h1>
+              <div className="formContainer">
+                <img
+                  src="https://www.duranirving.com/static/media/cartoon.72f7f183.jpg"
+                  className="authLogo"
+                />
                 {form()}
+                <p className="formBottomText">
+                  Don't have an account?{" "}
+                  <Link to="/auth/register">Sign up!</Link>
+                </p>
               </div>
             );
           }}
@@ -94,10 +120,15 @@ export default function AuthenticationPage() {
           render={() => {
             setPath("/register");
             return (
-              <div>
-                <Link to="/auth">login</Link>
-                <h1>register</h1>
+              <div className="formContainer">
+                <img
+                  src="https://www.duranirving.com/static/media/cartoon.72f7f183.jpg"
+                  className="authLogo"
+                />
                 {form()}
+                <p className="formBottomText">
+                  Already have an account? <Link to="/auth/">Log in!</Link>
+                </p>
               </div>
             );
           }}

@@ -11,49 +11,54 @@ import Typography from "@material-ui/core/Typography";
 const useStyles = makeStyles({
   root: {
     width: 245,
-    maxWidth: 345,
+    maxWidth: 245,
     display: "flex",
     flexDirection: "column",
-    margin:10,
-
+    margin: 10,
   },
   media: {
-    height: 200,
+    height: 150,
   },
   options: {
-
-  }
+    // alignSelf:"flex-end"
+  },
 });
 
-export default function ShopCard(props) {
+export default function ProductCard(props) {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root} >
-      <CardActionArea  href={`/shop/${props.shop.id}`}>
+    <Card className={classes.root}>
+      <CardActionArea href={`/product/${props.product.id}`}>
         {/* <CardMedia
           className={classes.media}
-          // image={props.shop.store_logo}
+          // image={props.product.image || "https://fulltummyfund.co.za/wp-content/uploads/2017/01/PlaceholderLogo.png"}
           title="Contemplative Reptile"
-        > */}
-          <img src={props.shop.store_logo} className={classes.media}/>
+        >  */}
+        <img src={props.product.image} className={classes.media} />
+
         {/* </CardMedia> */}
         <CardContent>
           <Typography gutterBottom component="h2">
-            {props.shop.store_name.toUpperCase()}
+            {props.product.product_name.toUpperCase()}
           </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {props.shop.products.length} Products
-          </Typography>
+          {/* <Typography variant="body2" color="textSecondary" component="p">
+            {props.product.price}
+            {props.product.description}
+          </Typography> */}
         </CardContent>
       </CardActionArea>
       <CardActions className={classes.options}>
-        <Button size="small" color="primary" href={`/shop/${props.shop.id}`}>
+        <Button
+          size="small"
+          color="primary"
+          href={`/product/${props.product.id}`}
+        >
           Edit
         </Button>
-        <Button size="small" color="primary" href={props.shop.store_url}>
+        {/* <Button size="small" color="primary" href={props.product.store_url}>
           View Site
-        </Button>
+        </Button> */}
       </CardActions>
     </Card>
   );

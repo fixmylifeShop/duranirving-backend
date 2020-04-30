@@ -7,11 +7,15 @@ function axiosWithAuth() {
     baseURL: process.env.REACT_APP_DOMAIN_NAME,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `${token}`
-    }
+      Authorization: `${token}`,
+    },
   });
 }
 
-function AxiosWithoutAuth() {}
+function axiosWithoutAuth() {
+  return axios.create({
+    baseURL: process.env.REACT_APP_DOMAIN_NAME,
+  });
+}
 
-export { axiosWithAuth, AxiosWithoutAuth };
+export { axiosWithAuth, axiosWithoutAuth };
