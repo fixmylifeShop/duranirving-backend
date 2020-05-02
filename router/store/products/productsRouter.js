@@ -19,6 +19,7 @@ router.get("/all", (req, res) => {
     });
 });
 
+// make middleware to check if exist
 router.get("/:id", (req, res) => {
   Products.findById(req.params.id)
     .then((product) => {
@@ -34,10 +35,11 @@ router.get("/:id", (req, res) => {
     .catch((err) => {
       res
         .status(500)
-        .json({ err, message: "we ran into an error retreving the user" });
+        .json({ err, message: "we ran into an error retreving the shop" });
     });
 });
 
+// check user owns photo or admin
 router.post("/", multer.single("file"), (req, res) => {
   let file = req.file;
   const product = req.body;
@@ -47,7 +49,7 @@ router.post("/", multer.single("file"), (req, res) => {
       .then((inserted) => {
         let image = input.image;
         if (image) {
-          ProductImages.add({ product_id: input.shop_id, image})
+          ProductImages.add({ product_id: input.shop_id, image })
             .then((first) => {
               inserted.images = first.image;
               res.status(201).json(inserted);
@@ -76,6 +78,37 @@ router.post("/", multer.single("file"), (req, res) => {
   } else {
     send(product);
   }
+});
+
+router.put("/:id", (req,res) => {
+  const id = req.params.id;
+  const changes = req.body;
+  Products.update(id, changes)
+  .then((update) => {
+    res.status(200).json(update);
+  })
+  .catch((error) => {
+    res.status(500).json({
+      errorMessage: error,
+    });
+  });
+})
+
+// make middleware to check if exist
+// check user owns photo or admin
+router.delete("/:id", (req, res) => {
+  Products.remove(req.params.id)
+    .then((del) => {
+      res
+        .status(200)
+        .json({
+          message: `Product was successfully deleted`,
+        })
+        .end(del);
+    })
+    .catch((err) => {
+      res.status(500).json({ err, message: "error, unable to delete product" });
+    });
 });
 
 module.exports = router;

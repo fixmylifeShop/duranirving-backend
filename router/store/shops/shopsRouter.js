@@ -73,8 +73,8 @@ router.get("/logged/user", restricted, (req, res) => {
   Shops.getUserShops(req.decodedToken.id)
     .then(async (shop) => {
       const newShop = await shop.map(async (store) => {
-        store.products = await Products.getShopProducts(store.id)
-        
+        store.products = await Products.getShopProducts(store.id);
+
         return store;
       });
       res.status(200).json(await Promise.all(newShop));
@@ -169,5 +169,9 @@ router.delete(
 const ProductsRouter = require("../products/productsRouter");
 
 router.use("/products", ProductsRouter);
+
+const ProductImagesRouter = require("../productImages/productImagesRouter");
+
+router.use("/images", ProductImagesRouter);
 
 module.exports = router;

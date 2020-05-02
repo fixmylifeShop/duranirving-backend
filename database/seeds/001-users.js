@@ -15,6 +15,7 @@ exports.seed = function (knex) {
             first_name: "irving",
             last_name: "duran",
             phone: "3476655234",
+            // created_at: "2015-05-02 02:45:57"
           },
           {
             id: 2,
@@ -24,6 +25,7 @@ exports.seed = function (knex) {
             first_name: "irving",
             last_name: "duran",
             phone: "3476655234",
+            // created_at: "2017-05-02 02:45:57"
           },
           {
             email: "fixmylifenyc@gmail.com",
@@ -31,6 +33,7 @@ exports.seed = function (knex) {
             first_name: "irving",
             last_name: "duran",
             phone: "3476655234",
+            // created_at: "2020-05-02 02:45:57"
           },
         ]);
       })
