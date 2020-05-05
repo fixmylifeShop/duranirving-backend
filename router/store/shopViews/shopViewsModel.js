@@ -5,6 +5,7 @@ module.exports = {
   getShopViewsCount,
   findBy,
   findById,
+  add,
   update,
   remove,
 };
@@ -14,26 +15,33 @@ function getViews() {
 }
 
 async function getShopViewsCount(shop_id) {
-  
-  const unique_year = [];
-  const years = []
+  let unique_year = [];
+  let years = [];
   let shop_views_count = await db("shop_views").where({ shop_id });
+  console.log(shop_views_count.length);
+  if (!shop_views_count.length) {
+    db("shop_views").insert({ shop_id }).then(getShopViewsCount(shop_id));
+  }
 
-  shop_views_count.map((unique) => {
-    console.log(shop_views_count);
-    if (unique_year.includes(unique.created_at.slice(0, 4))) {
-    } else {
-      unique_year.push({year :unique.created_at.slice(0, 4),fixed_count:unique.fixed_count });
-      years.push(unique.created_at.slice(0, 4))
-    }
-  });
+  const yearSlice = (e) => e.created_at.slice(0, 4);
+  shop_views_count
+    .sort((a, b) => yearSlice(a) - yearSlice(b))
+    .map((unique) => {
+      let num = yearSlice(unique);
+      if (!years.includes(num)) {
+        unique_year.push({
+          year: num,
+          fixed_count: unique.fixed_count,
+        });
+        years.push(num);
+      }
+    });
 
   let shop = await db("shops").where({ id: shop_id }).first();
+  shop.total_views = 0;
   shop.view_years = years;
-shop.total_views = 0;
+  shop.view_data = [];
   shop.year_view_counts = [];
-  shop.view_years = []
-  shop.view_data = []
   unique_year.forEach(async (year) => {
     let yearDate_count = await db("shop_views")
       .where({ shop_id })
@@ -41,18 +49,15 @@ shop.total_views = 0;
       .count("id as count");
 
     if (yearDate_count) {
-      shop.total_views += yearDate_count[0].count -1 + year.fixed_count
+      shop.total_views += yearDate_count[0].count - 1 + year.fixed_count;
       shop.year_view_counts.push({
-        year : year.year,
+        year: year.year,
         count: yearDate_count[0].count,
         fixed_count: year.fixed_count,
       });
-      shop.view_data.push(yearDate_count[0].count -1 + year.fixed_count)
+      shop.view_data.push(yearDate_count[0].count - 1 + year.fixed_count);
     }
-    
   });
-
-
 
   shop.view_years = years;
   await db("shop_views").where({ shop_id });
@@ -65,6 +70,12 @@ function findBy(filter) {
 
 function findById(id) {
   return db("shop_views").where({ id }).first();
+}
+
+async function add(view) {
+  const [id] = await db("shop_views").insert(view, "id");
+
+  return findById(id);
 }
 
 function update(id, changes) {

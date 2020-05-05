@@ -30,8 +30,8 @@ exports.up = function (knex) {
 
       tbl.increments();
 
-      tbl.integer("fixed_count");
-      
+      tbl.integer("fixed_count").defaultTo(0);
+
       tbl.timestamps(true, true);
     })
     .createTable("products", (tbl) => {

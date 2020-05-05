@@ -17,8 +17,8 @@ router.get("/all", (req, res) => {
 
 router.get("/:id", (req, res) => {
   Views.getShopViewsCount(req.params.id)
-    .then((users) => {
-      res.status(200).json(users);
+    .then((shop) => {
+      res.status(200).json(shop);
     })
     .catch((err) => {
       res
@@ -51,6 +51,18 @@ router.get("/", restricted, (req, res) => {
 //     });
 // });
 
+router.post("/", (req, res) => {
+  Views.add(req.body)
+    .then((inserted) => {
+      return res.status(201).json(inserted);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ err, message: "we ran into an error retreving the user" });
+    });
+});
+
 router.put("/:id", restricted, (req, res) => {
   const id = req.params.id;
   const changes = req.body;
@@ -65,26 +77,19 @@ router.put("/:id", restricted, (req, res) => {
     });
 });
 
-router.delete("/:id", restricted, (req, res) => {
-  const user = req.decodedToken;
-  if (user.id == req.params.id) {
+router.delete("/:id", (req, res) => {
     Views.remove(req.params.id)
       .then((del) => {
         res
           .status(200)
           .json({
-            message: `User:${user.email} was successfully deleted`,
+            message: `View was successfully deleted`,
           })
           .end(del);
       })
       .catch((err) => {
         res.status(500).json({ err, message: "error, unable to delete user" });
       });
-  } else {
-    res.status(400).json({
-      message: "you are not able to delete another users account",
-    });
-  }
 });
 
 router.delete("/", restricted, (req, res) => {

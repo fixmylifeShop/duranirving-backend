@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Shops = require("./shopsModel");
 const Products = require("../products/productsModel");
+const Views = require("../shopViews/shopViewsModel");
 const restricted = require("../../auth/middleware/restrictedMiddleware");
 
 const {
@@ -57,7 +58,13 @@ router.get("/user/:id", (req, res) => {
   Shops.getUserShops(req.params.id)
     .then(async (shop) => {
       const newShop = await shop.map(async (store) => {
-        store.products = await Products.getShopProducts(store.id);
+        // store.products = await Products.getShopProducts(store.id);
+        let {
+          view_years,
+          total_views,
+          view_data,
+        } = await Views.getShopViewsCount(store.id);
+        store.views = { total_views, view_years, view_data };
         return store;
       });
       res.status(200).json(await Promise.all(newShop));
@@ -74,7 +81,12 @@ router.get("/logged/user", restricted, (req, res) => {
     .then(async (shop) => {
       const newShop = await shop.map(async (store) => {
         store.products = await Products.getShopProducts(store.id);
-
+        let {
+          view_years,
+          total_views,
+          view_data,
+        } = await Views.getShopViewsCount(store.id);
+        store.views = { total_views, view_years, view_data };
         return store;
       });
       res.status(200).json(await Promise.all(newShop));
