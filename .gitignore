@@ -60,5 +60,5 @@ typings/
 # next.js build output
 .next
 
-
-my-portfolio-248005-38416b73e68c.json
+# google credentials file for google cloud service. Will be created on build
+google-creds.json

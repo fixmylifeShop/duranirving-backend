@@ -1,12 +1,13 @@
 const cors = require("cors");
 const express = require("express");
 const helmet = require("helmet");
-
 const server = express();
-
+const createCredsJsonFile = require('../components/createCreds')
 server.use(helmet());
 server.use(cors());
 server.use(express.json());
+
+createCredsJsonFile()
 
 const authRouter = require("../router/auth/authRouter");
 const mailerRouter = require("../router/mailer/mailerRouter");
