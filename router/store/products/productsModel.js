@@ -16,7 +16,7 @@ function getAllProducts() {
 }
 
 function getShopProducts(shop_id) {
-  return db("products").where({shop_id});
+  return db("products").where({ shop_id });
   //   .join("users", "products.user_id", "=", "users.id")
   //   .select(selectedData);
 }
@@ -36,7 +36,10 @@ function findById(id) {
 
 async function add(product) {
   const [id] = await db("products").insert(product, "id");
-
+  const addImage = { product_id: id, image: product.image };
+  console.log(addImage)
+  await db("product_photos").insert(addImage);
+  
   return findById(id);
 }
 

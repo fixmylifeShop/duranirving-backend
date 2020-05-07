@@ -25,7 +25,7 @@ router.get("/:id", (req, res) => {
     .then((product) => {
       ProductImages.getProductImages(product.id)
         .then((images) => {
-          product.image = images;
+          product.images = images;
           res.status(200).json(product);
         })
         .catch((error) => {
@@ -43,27 +43,47 @@ router.get("/:id", (req, res) => {
 router.post("/", multer.single("file"), (req, res) => {
   let file = req.file;
   const product = req.body;
-
+// console.log(product)
   const send = (input) => {
     Products.add(input)
       .then((inserted) => {
-        let image = input.image;
-        if (image) {
-          ProductImages.add({ product_id: input.shop_id, image })
-            .then((first) => {
-              inserted.images = first.image;
+        // let image = inserted.image;
+        // console.log(inserted)
+        // if (image) {
+          // ProductImages.add({ product_id: input.shop_id, image:input.image })
+        //     .then((first) => {
+        //       console.log(first)
+        //       // inserted.images = first.image;
+        // console.log(inserted)
               res.status(201).json(inserted);
-            })
-            .catch((error) => {
-              res.status(500).json(error);
-            });
-        } else {
-          res.status(201).json(inserted);
-        }
+        //     })
+        //     .catch((error) => {
+        //       console.log(error)
+        //       res.status(500).json(error);
+        //     });
+        // } else {
+          
+        //   res.status(201).json(inserted);
+        // }
+      }).then(() => {
+        //      if (input.image) {
+        // ProductImages.add({ product_id: input.shop_id, image:input.image })
+          // .then((first) => {
+          //   console.log(first)
+          //   // inserted.images = first.image;
+          //   res.status(201).json(inserted);
+          // })
+          // .catch((error) => {
+          //   console.log(error)
+          //   res.status(500).json(error);
+          // });
+      // } 
       })
       .catch((error) => {
+        console.log(error)
         res.status(500).json(error);
       });
+ 
   };
 
   if (file) {

@@ -56,6 +56,7 @@ exports.up = function (knex) {
       tbl.timestamps(true, true);
     })
     .createTable("product_photos", (tbl) => {
+      
       tbl
         .integer("product_id")
         .references("id")

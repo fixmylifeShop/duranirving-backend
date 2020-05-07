@@ -7,15 +7,17 @@ const cookieParser = require("cookie-parser");
 
 let whitelist = process.env.WHITELIST_CORS;
 
-
 let corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
-      console.log("pass")
+      console.log("pass");
+    // }
+    // if (!origin) {
+    //   callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
-      console.log("cant pass")
+      // console.log(origin)
     }
   },
   credentials: true,

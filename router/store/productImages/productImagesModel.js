@@ -28,6 +28,7 @@ function findById(id) {
 }
 
 async function add(image) {
+  // console.log(image)
   const [id] = await db("product_photos").insert(image, "id");
 
   return findById(id);
