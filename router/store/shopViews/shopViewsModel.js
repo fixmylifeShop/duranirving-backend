@@ -18,7 +18,7 @@ async function getShopViewsCount(shop_id) {
   let unique_year = [];
   let years = [];
   let shop_views_count = await db("shop_views").where({ shop_id });
-  console.log(shop_views_count.length);
+  // console.log(shop_views_count.length);
   if (!shop_views_count.length) {
     db("shop_views").insert({ shop_id }).then(getShopViewsCount(shop_id));
   }

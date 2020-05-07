@@ -5,17 +5,19 @@ const server = express();
 const session = require("../session");
 const cookieParser = require("cookie-parser");
 
-var whitelist = process.env.WHITELIST_CORS;
+let whitelist = process.env.WHITELIST_CORS;
 
-var corsOptions = {
-  origin: "*",
-  // function (origin, callback) {
-  //   if (whitelist.indexOf(origin) !== -1) {
-  //     callback(null, true);
-  //   } else {
-  //     callback(new Error("Not allowed by CORS"));
-  //   }
-  // },
+
+let corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+      console.log("pass")
+    } else {
+      callback(new Error("Not allowed by CORS"));
+      console.log("cant pass")
+    }
+  },
   credentials: true,
 };
 
