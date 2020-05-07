@@ -6,7 +6,7 @@ const sessionConfig = {
   secret: process.env.SESSION_SECRET,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 30,
-    secure: false, //process.env.PORT ? true : false,
+    secure: process.env.SESSION_SECURE || false, //false,
     httpOnly: true,
   },
   resave: false,

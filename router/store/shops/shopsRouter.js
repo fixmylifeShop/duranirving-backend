@@ -41,19 +41,26 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   Shops.findById(req.params.id)
-    .then((shop) => {
-      Products.getShopProducts(req.params.id).then((products) => {
-        shop.products = products;
-        return res.status(200).json(shop);
-      });
+    .then( (shop) => {
+      Products.getShopProducts(shop.id)
+      .then(products => {
+        shop.products = products
+        Views.getShopViewsCount(shop.id)
+        .then()
+        res.status(200).json(shop);
+
+      })
+
+
+      // res.status(200).json(await Promise.all(shop));
     })
+
     .catch((err) => {
       res
         .status(500)
         .json({ err, message: "we ran into an error retreving the shop" });
     });
 });
-
 router.get("/user/:id", (req, res) => {
   Shops.getUserShops(req.params.id)
     .then(async (shop) => {
