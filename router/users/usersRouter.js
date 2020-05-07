@@ -16,7 +16,7 @@ router.get("/all", (req, res) => {
 });
 
 router.get("/", restricted, (req, res) => {
-  Users.findById(req.decodedToken.id)
+  Users.findById(req.user.id)
     .then((user) => {
       return res.status(200).json(user);
     })
@@ -76,7 +76,7 @@ router.delete("/:id", restricted, (req, res) => {
 });
 
 router.delete("/", restricted, (req, res) => {
-  const user = req.decodedToken;
+  const user = req.session.user;
   Users.remove(user.id)
     .then((del) => {
       res

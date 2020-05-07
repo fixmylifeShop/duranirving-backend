@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-
 const Auth = require("./authModel");
-const generateToken = require("../../token");
+
 
 router.post("/register", (req, res) => {
   let user = req.body;
@@ -11,14 +10,12 @@ router.post("/register", (req, res) => {
 
   Auth.add(user)
     .then((saved) => {
-      // res.status(201).json(saved);
       const { email } = saved;
       Auth.findBy({ email })
         .then((user) => {
-          const token = generateToken(user);
+          req.session.user = user;
           res.status(200).json({
             message: `welcome ${user.first_name}!`,
-            token,
           });
         })
         .catch((error) => {
@@ -34,11 +31,11 @@ router.post("/login", (req, res) => {
   let { email, password } = req.body;
   Auth.findBy({ email })
     .then((user) => {
-      const token = generateToken(user);
       if (user && bcrypt.compareSync(password, user.password)) {
+        let {id, email,} = user
+        req.session.user = {id, email,}
         res.status(200).json({
           message: `welcome back ${user.first_name}!`,
-          token,
         });
       } else {
         res.status(401).json({ message: "Invalid Credentails" });
@@ -47,6 +44,20 @@ router.post("/login", (req, res) => {
     .catch((error) => {
       res.status(401).json({ error, message: "error user might not exist" });
     });
+});
+
+router.delete("/logout", (req, res) => {
+  if (req.session.user) {
+    req.session.destroy((err) => {
+      if (err) {
+        res.json({ message: "unable to log you out" });
+      } else {
+        res.status(200).json({ message: "Logout successful" });
+      }
+    });
+  } else {
+    res.status(200).json({ message: "No user logged in" });
+  }
 });
 
 module.exports = router;
