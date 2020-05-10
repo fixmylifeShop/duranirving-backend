@@ -88,13 +88,13 @@ router.get("/logged/user", restricted, (req, res) => {
     .then(async (shop) => {
       const newShop = await shop.map(async (store) => {
         store.products = await Products.getShopProducts(store.id);
-        let {
-          view_years,
-          total_views,
-          view_data,
-        } = await Views.getShopViewsCount(store.id);
-        store.views = { total_views, view_years, view_data };
-        return store;
+      //   let {
+      //     view_years,
+      //     total_views,
+      //     view_data,
+      //   } = await Views.getShopViewsCount(store.id);
+      //   store.views = { total_views, view_years, view_data };
+      //   return store;
       });
       res.status(200).json(await Promise.all(newShop));
     })
