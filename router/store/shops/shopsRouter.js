@@ -9,19 +9,6 @@ const {
   multer,
 } = require("../../../components/googleCloudUploader.js");
 
-// router.post("/upload", multer.single("file"), (req, res) => {
-//   let file = req.file;
-//   if (file) {
-//     uploadImageToStorage(file)
-//       .then((success) => {
-//         return res.status(200).json(success);
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//         return res.status(500).json(error);
-//       });
-//   }
-// });
 
 router.get("/", (req, res) => {
   Shops.getAllShops()
@@ -84,9 +71,10 @@ router.get("/user/:id", (req, res) => {
 });
 
 router.get("/logged/user", restricted, (req, res) => {
+  // console.log(req)
   Shops.getUserShops(req.decodedToken.id)
     .then(async (shop) => {
-      const newShop = await shop.map(async (store) => {
+       await shop.map(async (store) => {
         store.products = await Products.getShopProducts(store.id);
         let {
           view_years,
@@ -96,7 +84,7 @@ router.get("/logged/user", restricted, (req, res) => {
         store.views = { total_views, view_years, view_data };
         return store;
       });
-      res.status(200).json(await Promise.all(newShop));
+      res.status(200).json(await Promise.all(shop));
     })
     .catch((err) => {
       res
