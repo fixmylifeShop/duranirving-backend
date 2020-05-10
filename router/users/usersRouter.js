@@ -16,7 +16,7 @@ router.get("/all", (req, res) => {
 });
 
 router.get("/", restricted, (req, res) => {
-  Users.findById(req.user.id)
+  Users.findById(req.decodedToken.id)
     .then((user) => {
       return res.status(200).json(user);
     })

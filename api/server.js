@@ -2,32 +2,34 @@ const cors = require("cors");
 const express = require("express");
 const helmet = require("helmet");
 const server = express();
-const session = require("../session");
-const cookieParser = require("cookie-parser");
+// const session = require("../session");
+// const cookieParser = require("cookie-parser");
 
-let whitelist = process.env.WHITELIST_CORS;
+// let whitelist = process.env.WHITELIST_CORS;
 
-let corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-      console.log("pass");
-    // }
-    // if (!origin) {
-    //   callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-      // console.log(origin)
-    }
-  },
-  credentials: true,
-};
+// let corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//       console.log("pass");
+//     // }
+//     // if (!origin) {
+//     //   callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//       // console.log(origin)
+//     }
+//   },
+//   credentials: true,
+// };
+// server.use(cors(corsOptions));
+// server.use(cookieParser());
+// server.use(session);
 
 server.use(helmet());
 server.use(express.json());
-server.use(cors(corsOptions));
-server.use(cookieParser());
-server.use(session);
+server.use(cors());
+
 
 const authRouter = require("../router/auth/authRouter");
 const mailerRouter = require("../router/mailer/mailerRouter");

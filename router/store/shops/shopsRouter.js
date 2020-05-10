@@ -84,7 +84,7 @@ router.get("/user/:id", (req, res) => {
 });
 
 router.get("/logged/user", restricted, (req, res) => {
-  Shops.getUserShops(req.user.id)
+  Shops.getUserShops(req.decodedToken.id)
     .then(async (shop) => {
       const newShop = await shop.map(async (store) => {
         store.products = await Products.getShopProducts(store.id);
@@ -108,7 +108,7 @@ router.get("/logged/user", restricted, (req, res) => {
 router.post("/", restricted, multer.single("file"), async (req, res) => {
   let file = req.file;
   const shop = req.body;
-  shop.user_id = req.user.id;
+  shop.user_id = req.decodedToken.id;
   const send = async (shop) => {
     try {
       const inserted = await Shops.add(shop);

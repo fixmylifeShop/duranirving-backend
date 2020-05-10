@@ -1,6 +1,9 @@
 const router = require("express").Router();
 const Views = require("./shopViewsModel");
 const restricted = require("../../auth/middleware/restrictedMiddleware");
+const generate = require("../../../token");
+const jwt = require("jsonwebtoken");
+const secrets = require("../../auth/middleware/secrets");
 
 router.get("/all", (req, res) => {
   Views.getViews()
@@ -39,27 +42,56 @@ router.get("/", restricted, (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  
-  if (req.cookies.Visited) {
-    // console.log(req.body);
-    return res.status(200).json({message:"already have cookie"});
-  } else {
-    // Views.add(req.body)
-    //   .then((inserted) => {
-    //     res.cookie("Visited", true, { maxAge: 900000, httpOnly: true  });
-    //     res.end();
-        
-    //     // return res.status(200).json(inserted);
-    //   })
-    //   .catch((err) => {
-    //     res
-    //       .status(500)
-    //       .json({ err, message: "we ran into an error retreving the user" });
-    //   });
-    res.cookie("Visited", true, { maxAge: 900000, httpOnly: true  });
-    res.send()
-  }
+  const token = req.headers.visited;
+
+  jwt.verify(token, secrets.jwtSecret, (err, decodedToken) => {
+    if (err) {
+      let token = generate.viewToken();
+      Views.add(req.body)
+        .then((inserted) => {
+          return res
+            .status(201)
+            .json({
+              message: "New visiter",
+              token,
+              view_added: inserted
+            });
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .json({ err, message: "we ran into an error retreving the user" });
+        });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "Already visited today", decodedToken });
+    }
+  });
 });
+
+// router.post("/", (req, res) => {
+
+//   if (req.cookies.Visited) {
+//     // console.log(req.body);
+//     return res.status(200).json({message:"already have cookie"});
+//   } else {
+//     // Views.add(req.body)
+//     //   .then((inserted) => {
+//     //     res.cookie("Visited", true, { maxAge: 900000, httpOnly: true  });
+//     //     res.end();
+
+//     //     // return res.status(200).json(inserted);
+//     //   })
+//     //   .catch((err) => {
+//     //     res
+//     //       .status(500)
+//     //       .json({ err, message: "we ran into an error retreving the user" });
+//     //   });
+//     res.cookie("Visited", true, { maxAge: 900000, httpOnly: true  });
+//     res.send()
+//   }
+// });
 
 router.put("/:id", restricted, (req, res) => {
   const id = req.params.id;
