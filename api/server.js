@@ -31,6 +31,7 @@ server.use(express.json());
 server.use(cors());
 
 
+const passportRouter = require("../router/auth/passportRouter")
 const authRouter = require("../router/auth/authRouter");
 const mailerRouter = require("../router/mailer/mailerRouter");
 const usersRouter = require("../router/users/usersRouter");
@@ -38,6 +39,7 @@ const shopsRouter = require("../router/store/shops/shopsRouter");
 const shopviewsRouter = require("../router/store/shopViews/shopViewsRouter");
 const cart = require("../router/store/cart/cartRouter");
 server.use("/api/", authRouter);
+server.use("/api/auth/", passportRouter);
 server.use("/api/mailer", mailerRouter);
 server.use("/api/users", usersRouter);
 server.use("/api/shops", shopsRouter);
