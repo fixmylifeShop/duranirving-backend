@@ -60,23 +60,20 @@ router.get("/:id", (req, res) => {
 router.get("/user/:id", (req, res) => {
   Shops.getUserShops(req.params.id)
     .then(async (shop) => {
-      const newShop = await shop.map(async (store) => {
-        // store.products = await Products.getShopProducts(store.id);
-        let {
-          view_years,
-          total_views,
-          view_data,
-        } = await Views.getShopViewsCount(store.id);
-        store.views = { total_views, view_years, view_data };
-        return store;
-      });
-      function PromiseTimeout(delayms) {
-        return new Promise(function (resolve, reject) {
-          setTimeout(resolve, delayms);
+      try {
+        const newShop = await shop.map(async (store) => {
+          let {
+            view_years,
+            total_views,
+            view_data,
+          } = await Views.getShopViewsCount(store.id);
+          store.views = { total_views, view_years, view_data };
+          return store;
         });
+        res.status(200).json(await Promise.all(newShop));
+      } catch {
+        res.status(200).json(await Promise.all(shop));
       }
-      await PromiseTimeout(20000);
-      res.status(200).json(await Promise.all(newShop));
     })
     .catch((err) => {
       res
