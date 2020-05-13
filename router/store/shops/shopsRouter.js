@@ -41,16 +41,12 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   Shops.findById(req.params.id)
-    .then( (shop) => {
-      Products.getShopProducts(shop.id)
-      .then(products => {
-        shop.products = products
-        Views.getShopViewsCount(shop.id)
-        .then()
+    .then((shop) => {
+      Products.getShopProducts(shop.id).then((products) => {
+        shop.products = products;
+        Views.getShopViewsCount(shop.id).then();
         res.status(200).json(shop);
-
-      })
-
+      });
 
       // res.status(200).json(await Promise.all(shop));
     })
@@ -74,6 +70,12 @@ router.get("/user/:id", (req, res) => {
         store.views = { total_views, view_years, view_data };
         return store;
       });
+      function PromiseTimeout(delayms) {
+        return new Promise(function (resolve, reject) {
+          setTimeout(resolve, delayms);
+        });
+      }
+      await PromiseTimeout(2000);
       res.status(200).json(await Promise.all(newShop));
     })
     .catch((err) => {

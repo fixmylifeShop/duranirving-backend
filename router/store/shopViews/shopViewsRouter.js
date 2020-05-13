@@ -19,7 +19,13 @@ router.get("/all", (req, res) => {
 
 router.get("/:id", (req, res) => {
   Views.getShopViewsCount(req.params.id)
-    .then((shop) => {
+    .then(async (shop) => {
+      function PromiseTimeout(delayms) {
+        return new Promise(function (resolve, reject) {
+          setTimeout(resolve, delayms);
+        });
+      }
+      await PromiseTimeout(2000);
       res.status(200).json(shop);
     })
     .catch((err) => {
@@ -49,13 +55,11 @@ router.post("/", (req, res) => {
       let token = generate.viewToken();
       Views.add(req.body)
         .then((inserted) => {
-          return res
-            .status(201)
-            .json({
-              message: "New visiter",
-              token,
-              view_added: inserted
-            });
+          return res.status(201).json({
+            message: "New visiter",
+            token,
+            view_added: inserted,
+          });
         })
         .catch((err) => {
           res

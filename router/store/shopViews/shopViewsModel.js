@@ -61,6 +61,7 @@ async function getShopViewsCount(shop_id) {
 
   shop.view_years = years;
   await db("shop_views").where({ shop_id });
+  
   return shop;
 }
 
