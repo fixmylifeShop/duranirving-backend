@@ -75,7 +75,7 @@ router.get("/user/:id", (req, res) => {
           setTimeout(resolve, delayms);
         });
       }
-      await PromiseTimeout(2000);
+      await PromiseTimeout(20000);
       res.status(200).json(await Promise.all(newShop));
     })
     .catch((err) => {
