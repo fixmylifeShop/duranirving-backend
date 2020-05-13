@@ -70,9 +70,9 @@ router.get("/user/:id", (req, res) => {
           store.views = { total_views, view_years, view_data };
           return store;
         });
-        res.status(200).json(await Promise.all(newShop));
+        res.status(200).json(newShop);
       } catch {
-        res.status(200).json(await Promise.all(shop));
+        res.status(200).json(shop);
       }
     })
     .catch((err) => {

@@ -35,6 +35,9 @@
     "start": "node index.js",
     "server": "nodemon index.js"
   },
+  "engines": {
+    "node": "12.16.3"
+  },
   "author": "fixmylifedesigns <ijd.irving@gmail.com>",
   "repository": "https://github.com/fixmylifeShop/duranirving-platform.git"
 }
