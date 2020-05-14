@@ -61,7 +61,6 @@ router.get("/user/:id", (req, res) => {
   Shops.getUserShops(req.params.id)
     .then(async (shop) => {
       const newShop = await shop.map(async (store) => {
-        // store.products = await Products.getShopProducts(store.id);
 
         store.views = await Views.getShopViewsCount(store.id)
         return store;
