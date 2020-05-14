@@ -57,15 +57,34 @@ router.get("/:id", (req, res) => {
         .json({ err, message: "we ran into an error retreving the shop" });
     });
 });
+// router.get("/user/:id", (req, res) => {
+//   Shops.getUserShops(req.params.id)
+//     .then(async (shop) => {
+//       const newShop = await shop.map(async (store) => {
+
+//         store.views = await Views.getShopViewsCount(store.id)
+//         return store;
+//       });
+//       res.status(200).json(await Promise.all(newShop));
+//     })
+//     .catch((err) => {
+//       res
+//         .status(500)
+//         .json({ err, message: "we ran into an error retreving the shop" });
+//     });
+// });
+
 router.get("/user/:id", (req, res) => {
   Shops.getUserShops(req.params.id)
-    .then(async (shop) => {
-      const newShop = await shop.map(async (store) => {
-
-        store.views = await Views.getShopViewsCount(store.id)
+    .then((shop) => {
+      shop.map((store) => {
+        // store.views = [];
+        Views.getShopViewsCount(store.id).then((res) => {
+          return (store.views = res);
+        });
         return store;
       });
-      res.status(200).json(await Promise.all(newShop));
+      return res.status(200).json(shop);
     })
     .catch((err) => {
       res
