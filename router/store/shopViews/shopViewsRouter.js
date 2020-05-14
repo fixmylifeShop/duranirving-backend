@@ -20,7 +20,7 @@ router.get("/all", (req, res) => {
 router.get("/:id", (req, res) => {
   Views.getShopViewsCount(req.params.id)
     .then((shop) => {
-      res.status(200).json(shop);
+      res.status(200).json({message:"views", views: shop});
     })
     .catch((err) => {
       res

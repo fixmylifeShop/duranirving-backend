@@ -85,7 +85,6 @@ function getShopViewsCount(shop_id) {
         });
 
       let view_data = [];
-
       let total_views = 0;
       shop_views_count.forEach((year) => {
         if (year.fixed_count !== 0) {
@@ -110,7 +109,6 @@ function getShopViewsCount(shop_id) {
 
       return { view_years, view_data, total_views };
     });
-  // return shop
 }
 
 function findBy(filter) {

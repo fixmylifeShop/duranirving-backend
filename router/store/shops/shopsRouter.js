@@ -44,13 +44,12 @@ router.get("/:id", (req, res) => {
     .then((shop) => {
       Products.getShopProducts(shop.id).then((products) => {
         shop.products = products;
-        Views.getShopViewsCount(shop.id).then();
-        res.status(200).json(shop);
+        Views.getShopViewsCount(shop.id).then((views) => {
+          shop.views = views;
+          res.status(200).json(shop);
+        });
       });
-
-      // res.status(200).json(await Promise.all(shop));
     })
-
     .catch((err) => {
       res
         .status(500)
