@@ -19,8 +19,49 @@ router.get("/all", (req, res) => {
 
 router.get("/:id", (req, res) => {
   Views.getShopViewsCount(req.params.id)
-    .then((shop) => {
-      res.status(200).json(shop);
+    .then((shop_views_count) => {
+      let unique_year = [];
+      let view_years = [];
+
+      const yearSlice = (e) => e.created_at.slice(0, 4);
+      shop_views_count
+        .sort((a, b) => yearSlice(a) - yearSlice(b))
+        .forEach((unique) => {
+          let num = yearSlice(unique);
+          if (!view_years.includes(num)) {
+            unique_year.push({
+              year: num,
+              fixed_count: unique.fixed_count,
+            });
+            view_years.push(num);
+          }
+        });
+
+      let view_data = [];
+
+      let total_views = 0;
+      shop_views_count.forEach((year) => {
+        if (year.fixed_count !== 0) {
+          total_views += year.fixed_count;
+        } else {
+          total_views += 1;
+        }
+      });
+      view_years.map((year) => {
+        let eachCount = 0;
+        shop_views_count.forEach((data) => {
+          if (yearSlice(data) === year) {
+            if (data.fixed_count !== 0) {
+              eachCount += data.fixed_count;
+            } else {
+              eachCount += 1;
+            }
+          }
+        });
+        view_data.push(eachCount);
+      });
+
+      return res.status(200).json({ view_years, view_data, total_views });
     })
     .catch((err) => {
       res
@@ -49,13 +90,11 @@ router.post("/", (req, res) => {
       let token = generate.viewToken();
       Views.add(req.body)
         .then((inserted) => {
-          return res
-            .status(201)
-            .json({
-              message: "New visiter",
-              token,
-              view_added: inserted
-            });
+          return res.status(201).json({
+            message: "New visiter",
+            token,
+            view_added: inserted,
+          });
         })
         .catch((err) => {
           res
