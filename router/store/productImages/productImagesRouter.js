@@ -42,7 +42,7 @@ router.get("/:id", (req, res) => {
 router.post("/", multer.single("file"), (req, res) => {
   let file = req.file;
   const image = req.body;
-  console.log(image);
+  // console.log(file);
   const send = (input) => {
     Images.add(input)
       .then((inserted) => {
@@ -80,7 +80,7 @@ router.post("/", multer.single("file"), (req, res) => {
     .catch((err) => {
       res
         .status(500)
-        .json({ err, message: "we ran into an error retreving the user" });
+        .json({ err, message: "error added your image to this product" });
     });
 });
 
