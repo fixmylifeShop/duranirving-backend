@@ -16,7 +16,7 @@ function getAllShops() {
 }
 
 function getUserShops(id) {
-  return db("shops").where("shops.user_id", id);
+  return db("shops").where("shops.user_id", id)
   //   .join("users", "shops.user_id", "=", "users.id")
   //   .select(selectedData);
 }

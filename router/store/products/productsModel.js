@@ -11,22 +11,23 @@ module.exports = {
 
 function getAllProducts() {
   return db("products");
-  //   .join("users", "shops.user_id", "=", "users.id")
-  //   .select(selectedData);
 }
 
 function getShopProducts(shop_id) {
-  return db("products").where({ shop_id });
-  //   .join("users", "products.user_id", "=", "users.id")
-  //   .select(selectedData);
+  return db("products")
+    .where({ shop_id })
+    .then((products) => {
+      products.map(async (product) => {
+        db("product_photos")
+          .where({ product_id: product.id })
+          .first()
+          .then((res) => {
+            return (product.image = res.image);
+          });
+      });
+      return products;
+    });
 }
-
-//   function getUserShops(id) {
-//     return db("products")
-//       .where("products.user_id", id)
-//     //   .join("users", "products.user_id", "=", "users.id")
-//     //   .select(selectedData);
-//   }
 
 function findById(id) {
   return db("products").where({ id }).first();
@@ -35,11 +36,13 @@ function findById(id) {
 }
 
 async function add(product) {
-  const [id] = await db("products").insert(product, "id");
-  const addImage = { product_id: id, image: product.image };
-  console.log(addImage)
-  await db("product_photos").insert(addImage);
+  let {description, image, price, product_name, shop_id} = product
+  let insertProduct = {description,price, product_name, shop_id}
+  const [id] = await db("products").insert(insertProduct, "id");
+  const addImage = { product_id: id, image };
   
+  await db("product_photos").insert(addImage);
+
   return findById(id);
 }
 

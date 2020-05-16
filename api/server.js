@@ -1,4 +1,5 @@
 const cors = require("cors");
+const fileupload = require("express-fileupload");
 const express = require("express");
 const helmet = require("helmet");
 const server = express();
@@ -29,7 +30,7 @@ const server = express();
 server.use(helmet());
 server.use(express.json());
 server.use(cors());
-
+server.use(fileupload({ useTempFiles: true }));
 
 // const passportRouter = require("../router/auth/passportRouter")
 const authRouter = require("../router/auth/authRouter");

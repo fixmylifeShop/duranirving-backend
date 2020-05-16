@@ -1,11 +1,7 @@
 const router = require("express").Router();
 const Products = require("./productsModel");
 const ProductImages = require("../productImages/productImagesModel");
-
-const {
-  uploadImageToStorage,
-  multer,
-} = require("../../../components/googleCloudUploader.js");
+const upload = require("../../../components/cloudinaryUploader");
 
 router.get("/all", (req, res) => {
   Products.getAllProducts()
@@ -40,44 +36,14 @@ router.get("/:id", (req, res) => {
 });
 
 // check user owns photo or admin
-router.post("/", multer.single("file"), (req, res) => {
-  let file = req.file;
+router.post("/", (req, res) => {
+  // let file = req.files.file;
   const product = req.body;
 // console.log(product)
-  const send = (input) => {
+  const send = (input, image_url) => {
     Products.add(input)
       .then((inserted) => {
-        // let image = inserted.image;
-        // console.log(inserted)
-        // if (image) {
-          // ProductImages.add({ product_id: input.shop_id, image:input.image })
-        //     .then((first) => {
-        //       console.log(first)
-        //       // inserted.images = first.image;
-        // console.log(inserted)
-              res.status(201).json(inserted);
-        //     })
-        //     .catch((error) => {
-        //       console.log(error)
-        //       res.status(500).json(error);
-        //     });
-        // } else {
-          
-        //   res.status(201).json(inserted);
-        // }
-      }).then(() => {
-        //      if (input.image) {
-        // ProductImages.add({ product_id: input.shop_id, image:input.image })
-          // .then((first) => {
-          //   console.log(first)
-          //   // inserted.images = first.image;
-          //   res.status(201).json(inserted);
-          // })
-          // .catch((error) => {
-          //   console.log(error)
-          //   res.status(500).json(error);
-          // });
-      // } 
+            res.status(201).json(inserted);
       })
       .catch((error) => {
         console.log(error)
@@ -86,15 +52,16 @@ router.post("/", multer.single("file"), (req, res) => {
  
   };
 
-  if (file) {
-    uploadImageToStorage(file)
-      .then((img) => {
-        product.image = img;
-        send(product);
-      })
-      .catch((error) => {
+  if (req.files) {
+    let file = req.files.file;
+    upload(file.tempFilePath, (error, result) => {
+      if (result && result.url) {
+        product.image = result.url;
+        send(product,result.url);
+      } else {
         res.status(500).json(error);
-      });
+      }
+    });
   } else {
     send(product);
   }

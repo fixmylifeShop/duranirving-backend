@@ -8,11 +8,13 @@
     "@google-cloud/storage": "^4.7.0",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.0.0",
+    "cloudinary": "^1.21.0",
     "connect-session-knex": "^1.6.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-fileupload": "^1.1.7-alpha.3",
     "express-session": "^1.17.1",
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
@@ -34,9 +36,6 @@
     "test": "jest --watch --verbose",
     "start": "node index.js",
     "server": "nodemon index.js"
-  },
-  "engines": {
-    "node": "12.16.3"
   },
   "author": "fixmylifedesigns <ijd.irving@gmail.com>",
   "repository": "https://github.com/fixmylifeShop/duranirving-platform.git"

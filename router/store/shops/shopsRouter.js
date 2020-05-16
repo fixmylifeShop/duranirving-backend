@@ -3,25 +3,7 @@ const Shops = require("./shopsModel");
 const Products = require("../products/productsModel");
 const Views = require("../shopViews/shopViewsModel");
 const restricted = require("../../auth/middleware/restrictedMiddleware");
-
-const {
-  uploadImageToStorage,
-  multer,
-} = require("../../../components/googleCloudUploader.js");
-
-// router.post("/upload", multer.single("file"), (req, res) => {
-//   let file = req.file;
-//   if (file) {
-//     uploadImageToStorage(file)
-//       .then((success) => {
-//         return res.status(200).json(success);
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//         return res.status(500).json(error);
-//       });
-//   }
-// });
+const upload = require("../../../components/cloudinaryUploader");
 
 router.get("/", (req, res) => {
   Shops.getAllShops()
@@ -114,43 +96,43 @@ router.get("/logged/user", restricted, (req, res) => {
     });
 });
 
-router.post("/", restricted, multer.single("file"), async (req, res) => {
-  let file = req.file;
+router.post("/", restricted, (req, res) => {
   const shop = req.body;
   shop.user_id = req.decodedToken.id;
-  const send = async (shop) => {
-    try {
-      const inserted = await Shops.add(shop);
-      res.status(201).json(inserted);
-    } catch (error) {
-      res
-        .status(500)
-        .json({ error, message: "we ran into an error creating your store" });
-    }
-  };
 
-  if (file) {
-    uploadImageToStorage(file)
-      .then((success) => {
-        shop.store_logo = success;
-        send(shop);
+  const send = (shop) => {
+    Shops.add(shop)
+      .then((inserted) => {
+        res.status(201).json(inserted);
       })
       .catch((error) => {
-        res.status(500).json(error);
+        res.status(500).json({
+          error,
+          message: "we ran into an error creating your store",
+        });
       });
+  };
+  if (req.files) {
+    let file = req.files.file;
+    upload(file.tempFilePath, (error, result) => {
+      if (result && result.url) {
+        shop.store_logo = result.url;
+        send(shop);
+      } else {
+        res.status(500).json(error);
+      }
+    });
   } else {
-    shop.store_logo =
-      "https://fulltummyfund.co.za/wp-content/uploads/2017/01/PlaceholderLogo.png";
     send(shop);
   }
 });
 
 router.put(
   "/:id",
-  multer.single("file"),
-  // restricted, verifyPostOwner,
+  restricted,
+  // verifyPostOwner,
   (req, res) => {
-    let file = req.file;
+    // let file = req.file;
     const shop = req.body;
     const sendUpdate = () => {
       return Shops.update(req.params.id, req.body)
@@ -161,16 +143,19 @@ router.put(
           res.status(500).json({ err, message: "error updating your post" });
         });
     };
-    if (file) {
-      uploadImageToStorage(file)
-        .then((success) => {
-          shop.store_logo = success;
+    if (req.files) {
+      let file = req.files.file;
+      upload(file.tempFilePath, (error, result) => {
+        if (result && result.url) {
+          shop.store_logo = result.url;
           sendUpdate(shop);
-        })
-        .catch((error) => {
+        } else {
           res.status(500).json(error);
-        });
+        }
+      });
     } else {
+      shop.store_logo =
+        "https://fulltummyfund.co.za/wp-content/uploads/2017/01/PlaceholderLogo.png";
       sendUpdate(shop);
     }
   }

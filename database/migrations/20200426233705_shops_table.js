@@ -15,7 +15,11 @@ exports.up = function (knex) {
 
       tbl.string("store_url").notNullable();
 
-      tbl.string("store_logo");
+      tbl
+        .string("store_logo")
+        .defaultTo(
+          "https://fulltummyfund.co.za/wp-content/uploads/2017/01/PlaceholderLogo.png"
+        );
 
       tbl.timestamps(true, true);
     })
@@ -51,12 +55,11 @@ exports.up = function (knex) {
 
       tbl.integer("price");
 
-      tbl.string("image");
+      // tbl.string("image");
 
       tbl.timestamps(true, true);
     })
     .createTable("product_photos", (tbl) => {
-      
       tbl
         .integer("product_id")
         .references("id")
