@@ -21,6 +21,8 @@ exports.up = function (knex) {
           "https://fulltummyfund.co.za/wp-content/uploads/2017/01/PlaceholderLogo.png"
         );
 
+      tbl.boolean("maintenance").defaultTo(0);
+
       tbl.timestamps(true, true);
     })
     .createTable("shop_views", (tbl) => {
@@ -73,6 +75,41 @@ exports.up = function (knex) {
       tbl.string("image").notNullable();
 
       tbl.timestamps(true, true);
+    })
+    .createTable("orders", (tbl) => {
+      // tbl.increments()
+
+      tbl.uuid('id').primary()
+
+      tbl
+        .integer("shop_id")
+        .references("id")
+        .inTable("shops")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE")
+        .notNullable();
+
+      tbl
+        .integer("user_id")
+        .references("id")
+        .inTable("users")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE")
+        .notNullable();
+
+      tbl.string("email", 128);
+
+      tbl.string("first_name", 128);
+
+      tbl.string("last_name", 128);
+
+      tbl.json("transaction_info");
+
+      tbl.json("order_items");
+
+      tbl.boolean("shipped").defaultTo(0);
+
+      tbl.timestamps(true, true);
     });
 };
 
@@ -81,5 +118,6 @@ exports.down = function (knex) {
     .dropTableIfExists("shops")
     .dropTableIfExists("shop_views")
     .dropTableIfExists("products")
-    .dropTableIfExists("product_photos");
+    .dropTableIfExists("product_photos")
+    .dropTableIfExists("orders");
 };

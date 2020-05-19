@@ -1,0 +1,72 @@
+{
+  "shop_id": 1,
+  "user_id": 1,
+  "email": "hello@gmail.com",
+  "first_name": "jose",
+  "last_name": "guzman",
+  "transaction_info": {
+    "cart": "22R812043Y053611U",
+    "create_time": "2020-05-18T23:23:18Z",
+    "id": "PAYID-L3BRRZY58D66392LA113630P",
+    "intent": "sale",
+    "payer": {
+      "payer_info": {
+        "country_code": "US",
+        "email": "irving@gmail.com",
+        "first_name": "Irving",
+        "last_name": "Duran",
+        "middle_name": "Irving",
+        "payer_id": "MA6V8PJL4V95N",
+        "shipping_address": {
+          "city": "BROOKLYN",
+          "country_code": "US",
+          "line1": "123 troutman st",
+          "postal_code": "11237",
+          "recipient_name": "Irving Duran",
+          "state": "NY"
+        }
+      },
+      "payment_method": "paypal",
+      "status": "VERIFIED"
+    },
+    "state": "approved",
+    "transactions": {
+      "amount": {
+        "currency": "USD",
+        "details": {
+          "handling_fee": "0.00",
+          "insurance": "0.00",
+          "shipping": "0.00",
+          "shipping_discount": "0.00",
+          "subtotal": "5.00"
+        }
+      },
+      "total": "5.00",
+      "item_list": {},
+      "related_resources": {
+        "sale": {
+          "amount": {
+            "currency": "USD",
+            "details": {
+              "handling_fee": "0.00",
+              "insurance": "0.00",
+              "shipping": "0.00",
+              "shipping_discount": "0.00",
+              "subtotal": "5.00"
+            },
+            "total": "5.00"
+          },
+
+          "create_time": "2020-05-18T23:23:34Z",
+          "id": "8RK53506NY342782V",
+          "parent_payment": "PAYID-L3BRRZY58D66392LA113630P",
+          "payment_mode": "INSTANT_TRANSFER",
+          "protection_eligibility": "ELIGIBLE",
+          "state": "completed",
+          "update_time": "2020-05-18T23:23:34Z"
+        }
+      }
+    }
+  }
+}
+

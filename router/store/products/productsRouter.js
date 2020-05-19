@@ -21,6 +21,7 @@ router.get("/:id", (req, res) => {
     .then((product) => {
       ProductImages.getProductImages(product.id)
         .then((images) => {
+          product.image = images[0].image
           product.images = images;
           res.status(200).json(product);
         })

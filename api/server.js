@@ -38,14 +38,18 @@ const mailerRouter = require("../router/mailer/mailerRouter");
 const usersRouter = require("../router/users/usersRouter");
 const shopsRouter = require("../router/store/shops/shopsRouter");
 const shopviewsRouter = require("../router/store/shopViews/shopViewsRouter");
-const cart = require("../router/store/cart/cartRouter");
+const cartRouter = require("../router/store/cart/cartRouter");
+const ordersRouter = require("../router/store/orders/ordersRouter")
 server.use("/api/", authRouter);
 // server.use("/api/auth/", passportRouter);
 server.use("/api/mailer", mailerRouter);
 server.use("/api/users", usersRouter);
 server.use("/api/shops", shopsRouter);
 server.use("/api/views", shopviewsRouter);
-server.use("/api/cart", cart);
+server.use("/api/cart", cartRouter);
+server.use("/api/orders", ordersRouter);
+
+
 
 server.get("/", (req, res) => {
   res.status(200).json({ api: "DuranIrving api running" });
