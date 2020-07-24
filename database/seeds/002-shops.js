@@ -18,7 +18,7 @@ exports.seed = function (knex) {
             store_name: "durancycles shop",
             store_url: "fmlcycling.com",
             store_logo:
-              "https://assets.bigcartel.com/theme_images/27066146/PhotoGrid_1476146082387.jpg",
+              "https://res.cloudinary.com/fixmylife/image/upload/v1595343168/nnzayfosnphccfapdesf.png",
           },
         ]);
       })
