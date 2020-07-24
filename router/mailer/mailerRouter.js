@@ -3,10 +3,10 @@ const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-handlebars");
 
 let transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  // service: "gmail",
-  port: 465,
-  secure: true,
+  // host: 'smtp.gmail.com',
+  service: "gmail",
+  port: 587,
+  secure: false,
   auth: { user: process.env.EMAIL, pass: process.env.PASSWORD },
 });
 var m = new Date();
