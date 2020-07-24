@@ -5,6 +5,7 @@ const hbs = require("nodemailer-handlebars");
 let transporter = nodemailer.createTransport({
   service: "gmail",
   port: 465,
+  secure: true,
   auth: { user: process.env.EMAIL, pass: process.env.PASSWORD },
 });
 var m = new Date();
