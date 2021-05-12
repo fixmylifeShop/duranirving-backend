@@ -20,7 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.0",
     "multer": "^1.4.2",
-    "nodemailer": "^6.4.6",
+    "nodemailer": "^6.4.16",
     "nodemailer-handlebars": "^1.0.1",
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
